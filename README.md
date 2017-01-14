@@ -45,4 +45,4 @@ exit: kill java through task manager
 
 ## GroupTrackerUpdate source
 
-I did not feel this needed a repository, as all it does is run the bot. The source code can be found [here](https://www.dropbox.com/s/mzlyeroq0zj9a50/GroupTrackerUpdate.zip?dl=0). Please update the link (with a PR including changes) if changes are made.
+[here](gtupdate)
