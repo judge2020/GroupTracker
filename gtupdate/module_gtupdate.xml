@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_gtupdate" default="compile.module.gtupdate">
+  <dirname property="module.gtupdate.basedir" file="${ant.file.module_gtupdate}"/>
+  
+  <property name="module.jdk.home.gtupdate" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.gtupdate" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.gtupdate" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.gtupdate" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="gtupdate.output.dir" value="${module.gtupdate.basedir}/bin"/>
+  <property name="gtupdate.testoutput.dir" value="${module.gtupdate.basedir}/bin"/>
+  
+  <path id="gtupdate.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gtupdate.module.production.classpath">
+    <path refid="${module.jdk.classpath.gtupdate}"/>
+  </path>
+  
+  <path id="gtupdate.runtime.production.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+  </path>
+  
+  <path id="gtupdate.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+    <path refid="${module.jdk.classpath.gtupdate}"/>
+  </path>
+  
+  <path id="gtupdate.runtime.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gtupdate">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gtupdate">
+    <patternset refid="excluded.from.module.gtupdate"/>
+  </patternset>
+  
+  <path id="gtupdate.module.sourcepath">
+    <dirset dir="${module.gtupdate.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gtupdate" depends="compile.module.gtupdate.production,compile.module.gtupdate.tests" description="Compile module gtupdate"/>
+  
+  <target name="compile.module.gtupdate.production" depends="register.custom.compilers" description="Compile module gtupdate; production classes">
+    <mkdir dir="${gtupdate.output.dir}"/>
+    <javac2 destdir="${gtupdate.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.gtupdate}/javac">
+      <compilerarg line="${compiler.args.gtupdate}"/>
+      <bootclasspath refid="gtupdate.module.bootclasspath"/>
+      <classpath refid="gtupdate.module.production.classpath"/>
+      <src refid="gtupdate.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gtupdate"/>
+    </javac2>
+    
+    <copy todir="${gtupdate.output.dir}">
+      <fileset dir="${module.gtupdate.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gtupdate.tests" depends="register.custom.compilers,compile.module.gtupdate.production" description="compile module gtupdate; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gtupdate" description="cleanup module">
+    <delete dir="${gtupdate.output.dir}"/>
+    <delete dir="${gtupdate.testoutput.dir}"/>
+  </target>
+</project>
