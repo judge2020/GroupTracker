@@ -3,4 +3,4 @@ jdk:
   - oraclejdk8
 
 script:
-  - jar c *.class
+  - jar c src
