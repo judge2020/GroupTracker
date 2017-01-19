@@ -1,5 +1,7 @@
 # GroupTracker-Serv Documentation
+[![Build Status](https://travis-ci.org/judge2020/GroupTracker.svg?branch=master)](https://travis-ci.org/judge2020/GroupTracker)
 
+track groups for toontown
 ## Requirements:
 [Java sdk/jdk](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
