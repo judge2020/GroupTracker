@@ -86,6 +86,13 @@
   <property name="project.jdk.home" value="${jdk.home.1.8}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.pircbot.classpath">
+    <pathelement location="${basedir}/pircbot.jar"/>
+  </path>
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
@@ -101,9 +108,171 @@
   
   <!-- Modules -->
   
-  <import file="${basedir}/module_gt.xml"/>
   
-  <import file="${basedir}/gtupdate/module_gtupdate.xml"/>
+  <!-- Module gt -->
+  
+  <dirname property="module.gt.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.gt" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.gt" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.gt" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.gt" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="gt.output.dir" value="${module.gt.basedir}/bin"/>
+  <property name="gt.testoutput.dir" value="${module.gt.basedir}/bin"/>
+  
+  <path id="gt.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gt.module.production.classpath">
+    <path refid="${module.jdk.classpath.gt}"/>
+    <pathelement location="${basedir}/../../../../hunte_000/Documents/gt/pircbot.jar"/>
+    <path refid="library.pircbot.classpath"/>
+  </path>
+  
+  <path id="gt.runtime.production.module.classpath">
+    <pathelement location="${gt.output.dir}"/>
+    <pathelement location="${basedir}/../../../../hunte_000/Documents/gt/pircbot.jar"/>
+    <path refid="library.pircbot.classpath"/>
+  </path>
+  
+  <path id="gt.module.classpath">
+    <pathelement location="${gt.output.dir}"/>
+    <path refid="${module.jdk.classpath.gt}"/>
+    <pathelement location="${basedir}/../../../../hunte_000/Documents/gt/pircbot.jar"/>
+    <path refid="library.pircbot.classpath"/>
+  </path>
+  
+  <path id="gt.runtime.module.classpath">
+    <pathelement location="${gt.output.dir}"/>
+    <pathelement location="${basedir}/../../../../hunte_000/Documents/gt/pircbot.jar"/>
+    <path refid="library.pircbot.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gt">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gt">
+    <patternset refid="excluded.from.module.gt"/>
+  </patternset>
+  
+  <path id="gt.module.sourcepath">
+    <dirset dir="${module.gt.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gt" depends="compile.module.gt.production,compile.module.gt.tests" description="Compile module gt"/>
+  
+  <target name="compile.module.gt.production" depends="register.custom.compilers" description="Compile module gt; production classes">
+    <mkdir dir="${gt.output.dir}"/>
+    <javac2 destdir="${gt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.gt}/javac">
+      <compilerarg line="${compiler.args.gt}"/>
+      <bootclasspath refid="gt.module.bootclasspath"/>
+      <classpath refid="gt.module.production.classpath"/>
+      <src refid="gt.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gt"/>
+    </javac2>
+    
+    <copy todir="${gt.output.dir}">
+      <fileset dir="${module.gt.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gt.tests" depends="register.custom.compilers,compile.module.gt.production" description="compile module gt; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gt" description="cleanup module">
+    <delete dir="${gt.output.dir}"/>
+    <delete dir="${gt.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module gtupdate -->
+  
+  <dirname property="module.gtupdate.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.gtupdate" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.gtupdate" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.gtupdate" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.gtupdate" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="gtupdate.output.dir" value="${module.gtupdate.basedir}/gtupdate/bin"/>
+  <property name="gtupdate.testoutput.dir" value="${module.gtupdate.basedir}/gtupdate/bin"/>
+  
+  <path id="gtupdate.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gtupdate.module.production.classpath">
+    <path refid="${module.jdk.classpath.gtupdate}"/>
+  </path>
+  
+  <path id="gtupdate.runtime.production.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+  </path>
+  
+  <path id="gtupdate.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+    <path refid="${module.jdk.classpath.gtupdate}"/>
+  </path>
+  
+  <path id="gtupdate.runtime.module.classpath">
+    <pathelement location="${gtupdate.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gtupdate">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gtupdate">
+    <patternset refid="excluded.from.module.gtupdate"/>
+  </patternset>
+  
+  <path id="gtupdate.module.sourcepath">
+    <dirset dir="${module.gtupdate.basedir}/gtupdate">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gtupdate" depends="compile.module.gtupdate.production,compile.module.gtupdate.tests" description="Compile module gtupdate"/>
+  
+  <target name="compile.module.gtupdate.production" depends="register.custom.compilers" description="Compile module gtupdate; production classes">
+    <mkdir dir="${gtupdate.output.dir}"/>
+    <javac2 destdir="${gtupdate.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.gtupdate}/javac">
+      <compilerarg line="${compiler.args.gtupdate}"/>
+      <bootclasspath refid="gtupdate.module.bootclasspath"/>
+      <classpath refid="gtupdate.module.production.classpath"/>
+      <src refid="gtupdate.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gtupdate"/>
+    </javac2>
+    
+    <copy todir="${gtupdate.output.dir}">
+      <fileset dir="${module.gtupdate.basedir}/gtupdate/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gtupdate.tests" depends="register.custom.compilers,compile.module.gtupdate.production" description="compile module gtupdate; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gtupdate" description="cleanup module">
+    <delete dir="${gtupdate.output.dir}"/>
+    <delete dir="${gtupdate.testoutput.dir}"/>
+  </target>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
